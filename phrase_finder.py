@@ -3,10 +3,9 @@
 Utility which returns a list of the 100 most common three word sequences (phrases) from a given text
 '''
 import sys
-import string
 from collections import defaultdict 
 
-def process_text(file):
+def process_text(file,phrase_size,top_n):
     # convert to lower case
     text = file.lower()
 
@@ -28,13 +27,13 @@ def process_text(file):
     # filter empty strings
     words=list(filter(None, words))
 
-    # count the frequency of each 3 word phrase group
-    phrase_counts = phrase_frequency(words,3)
+    # count the frequency of each phrase_size word group
+    phrase_counts = phrase_frequency(words,phrase_size)
 
-    # sort the top 100 phrases
-    top_phrases = sort_phrase_counts(phrase_counts,100)
+    # sort the top n phrases
+    top_phrases = sort_phrase_counts(phrase_counts,top_n)
 
-    # print the counts of the top 100 phrases
+    # print the counts of the top n phrases
     print_counts(top_phrases)
 
 def phrase_frequency(word_list,group_size):
@@ -48,7 +47,7 @@ def phrase_frequency(word_list,group_size):
 
 def sort_phrase_counts(phrase_counts,top_n):
     # sorts the list of phrases which have already been counted by frequency
-    top_phrases = sorted(phrase_counts.items(), key=lambda t: (-t[1], t[0]))[:top_n]
+    top_phrases = sorted(phrase_counts.items(), key=lambda t: -t[1])[:top_n]
     return top_phrases
 
 def print_counts(top_phrases):
@@ -69,7 +68,7 @@ if __name__ == '__main__':
             #print ("Processing %s :" % file)
             with open(file,'r') as afile:
                 read_data += afile.read()
-        process_text(read_data)
+        process_text(read_data,3,100)
     else:
         if not sys.stdin.isatty():
             # no file names specified, process the text of stdin if not tty (terminal)
